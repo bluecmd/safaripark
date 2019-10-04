@@ -292,23 +292,7 @@ public class SaFariPark extends JFrame implements BaySelectionListener, WindowLi
     SwingUtilities.invokeLater(_taskRunner);
   }
 
-  public static void updateSplash(String str)
-  {
-    SplashScreen ss = SplashScreen.getSplashScreen();
-    // splash may not be required
-    if (ss == null) return;
-    int height = ss.getBounds().height;
-    int width = ss.getBounds().width;
-    Graphics2D g2d = ss.createGraphics();
-    g2d.setColor(Color.BLACK);
-    g2d.fillRect(0, height - 20, width, 20);
-    g2d.setColor(Color.WHITE);
-    g2d.drawString(str, 10, ss.getBounds().height - 10);
-    g2d.dispose();
-    ss.update();
-  }
-
-  public static void main(String[] args)
+  public static void main(String[] args) throws IOException
   {
     SaFariPark.loadBuildProps();
     Locale.setDefault(Locale.US);
@@ -329,15 +313,13 @@ public class SaFariPark extends JFrame implements BaySelectionListener, WindowLi
     });
 
 
-    LogManager.getLogManager().getLogger("").setLevel(Level.INFO);
-
-    Logger globalLogger = Logger.getLogger("");
+    LogManager.getLogManager().readConfiguration(
+        SaFariPark.class.getResourceAsStream("logging.properties"));
+    Logger globalLogger = Logger.getLogger(SaFariPark.class.getName());
     Handler[] handlers = globalLogger.getHandlers();
     for(Handler handler : handlers) {
       globalLogger.removeHandler(handler);
     }
-
-
 
     if (args.length == 2 && args[0].equals("--setdpi")){
 
@@ -349,13 +331,11 @@ public class SaFariPark extends JFrame implements BaySelectionListener, WindowLi
       }
     }
 
-
-
     SaFariPark sfpE;
     try {
-      updateSplash("Initializing SFP drivers");
+      LOG.info("Initializing SFP drivers");
       SFPManager sfpMgr = new SFPManager();
-      updateSplash("Loading XML definitions");
+      LOG.info("Loading XML definitions");
       DDMILoader ddmiLdr = new DDMILoader();
       OverlayManager ovlMgr = new OverlayManager();
       ovlMgr.scanDirectory(new File("overlays"));

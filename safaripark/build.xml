@@ -19,6 +19,7 @@
     <jar destfile="${dist}/safaripark.jar">
       <fileset dir="${build}" />
       <fileset dir="${src}" includes="**/*.png" />
+      <fileset dir="${src}" includes="**/*.properties" />
       <restrict>
         <archives>
           <zips>
@@ -35,7 +36,7 @@
         <attribute name="Main-Class" value="nl.nikhef.safaripark.SaFariPark"/>
       </manifest>
     </jar>
-    <!--
+    <!-- TODO: Move these into .jar
     <copy file="${resources}/splash.png" todir="${dist}"/>
     <copy todir="${dist}/overlays">
       <fileset dir="overlays"/>

@@ -18,3 +18,7 @@ ant
 ```
 java -jar safaripark/dist/safaripark.jar
 ```
+
+# SFP providers
+
+To add/remove supported SFP providers, modify `jsfp/src/META-INF/services/nl.nikhef.sfp.SFPProvider`.
