@@ -1,4 +1,5 @@
 **/*.log
 **/*.orig
-**/*.zip
-**/*.tar.gz
+**/*.jar
+**/.*swp
+**/.*swo

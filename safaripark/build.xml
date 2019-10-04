@@ -1,135 +1,79 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- ====================================================================== 
-     4 apr. 2016 13:06:34
-     
-     SaFariPark GUI Application                                                       
-                   
-     Vincent van Beveren (v.van.beveren[at]nikhef.nl)                                                                
-     ====================================================================== -->
 <project name="safaripark" default="default">
-    <description>
-            SaFariPark
-    </description>
-	
-	<property name="src" location="src"/>
-	<property name="build" location="build"/>
-	<property name="dist" location="dist"/>
-	<property name="resources" location="resources"/>
-	<property name="rebus" location="../rebus/rebus.jar" />
-	<property name="manual" location="../../doc/manual" />
-	<property name="jsfp" location="../jsfp/jsfp.jar" />
-	<property name="tools" location="../nikhef-tools/nikhef-tools.jar" />
-	<property name="lua" value="../jsfp/lib/luaj-jse-3.0.1.jar"/>
-	<property name="jna" value="../rebus/lib/jna-4.4.0.jar"/>
-	<property name="mig" value="lib/miglayout-4.0-swing.jar"/>
-	
+  <description>
+    SaFariPark
+  </description>
+  <property name="src" location="src"/>
+  <property name="build" location="build"/>
+  <property name="dist" location="dist"/>
+  <property name="resources" location="resources"/>
+  <target name="default" depends="dist" />
+  <target name="checks">
+    <condition property="jsfp.build">
+      <available file="${jsfp}"/>
+    </condition>
+  </target>
 
-	<target name="default" depends="dist" />
-		
-	<target name="checks">
-		<condition property="jsfp.build">
-			<available file="${jsfp}"/>
-		</condition>
-	</target>
-	
-	
-	<target name="jsfp" depends="checks" unless="jsfp.build">
-		<echo>Compiling JSFP</echo>
-		<ant dir="../jsfp" />
-	</target>
+  <target name="dist" depends="compile,buildprops">
+    <mkdir dir="${dist}"/>
+    <jar destfile="${dist}/safaripark.jar">
+      <fileset dir="${build}" />
+      <fileset dir="${src}" includes="**/*.png" />
+      <restrict>
+        <archives>
+          <zips>
+            <fileset dir="../" includes="rebus/rebus.jar"/>
+            <fileset dir="../" includes="jsfp/jsfp.jar"/>
+            <fileset dir="../" includes="nikhef-tools/nikhef-tools.jar"/>
+            <fileset dir="../" includes="jsfp/lib/luaj-jse-3.0.1.jar"/>
+            <fileset dir="../" includes="rebus/lib/jna-4.4.0.jar"/>
+            <fileset dir="./" includes="lib/miglayout-4.0-swing.jar"/>
+          </zips>
+        </archives>
+      </restrict>
+      <manifest>
+        <attribute name="Main-Class" value="nl.nikhef.safaripark.SaFariPark"/>
+      </manifest>
+    </jar>
+    <!--
+    <copy file="${resources}/splash.png" todir="${dist}"/>
+    <copy todir="${dist}/overlays">
+      <fileset dir="overlays"/>
+    </copy>
+    -->
+  </target>
+  <target name="compile">
+    <mkdir dir="${build}"/>
+    <javac srcdir="${src}" destdir="${build}" includeantruntime="no" debug="true" debuglevel="lines,vars,source">
+      <classpath>
+        <pathelement location="../rebus/lib/jna-4.4.0.jar"/>
+        <pathelement location="../rebus/rebus.jar"/>
+        <pathelement location="../jsfp/jsfp.jar"/>
+        <pathelement location="../nikhef-tools/nikhef-tools.jar"/>
+        <pathelement location="../jsfp/lib/luaj-jse-3.0.1.jar"/>
+        <pathelement location="lib/miglayout-4.0-swing.jar"/>
+      </classpath>
+    </javac>
+  </target>
+  <target name="buildprops">
+    <exec executable="git" outputproperty="git.tag">
+      <arg value="describe"/>
+      <arg value="--tags"/>
+      <arg value="--long"/>
+      <arg value="--always"/>
+    </exec>
+    <tstamp>
+      <format property="build.date" pattern="yyyy-MM-dd hh:mm:ss" />
+    </tstamp>
+    <propertyfile file="${build}/nl/nikhef/safaripark/build.properties">
+      <entry key="git.tag" value="${git.tag}"/>
+      <entry key="build.date" value="${build.date}" />
+    </propertyfile>
+  </target>
 
+  <target name="clean">
+    <delete dir="${build}"/>
+    <delete dir="${dist}"/>
+  </target>
 
-	
-	<target name="dist" depends="compile,buildprops">
-		<mkdir dir="${dist}"/>
-		<jar destfile="${dist}/safaripark.jar">
-			<fileset dir="${build}" />
-            <fileset dir="${src}"
-                includes="**/*.png"
-            />
-		</jar>
-		<copy file="${rebus}" todir="${dist}"/>
-		<copy file="${jsfp}" todir="${dist}"/>
-		<copy file="${tools}" todir="${dist}"/>
-		<copy file="${jna}" todir="${dist}"/>
-		<copy file="${lua}" todir="${dist}"/>
-        <copy file="${mig}" todir="${dist}"/>
-		<copy file="${resources}/splash.png" todir="${dist}"/>
-		<copy file="${manual}/tex/multisfp.pdf" todir="${dist}"/>
-        <copy todir="${dist}/overlays">
-            <fileset dir="overlays"/>
-        </copy>
-		<echo file="${dist}/safaripark.bat">@echo off
-start /b javaw -cp "rebus.jar;jna-4.4.0.jar;nikhef-tools.jar;luaj-jse-3.0.1.jar;jsfp.jar;safaripark.jar;miglayout-4.0-swing.jar" -splash:splash.png nl.nikhef.safaripark.SaFariPark
-		</echo>
-		<echo file="${dist}/safaripark.sh">#!/bin/bash
-java -cp "rebus.jar:jna-4.4.0.jar:nikhef-tools.jar:luaj-jse-3.0.1.jar:jsfp.jar:safaripark.jar:miglayout-4.0-swing.jar" -splash:splash.png nl.nikhef.safaripark.SaFariPark
-		</echo>
-        
-        <zip destfile="safaripark-${git.branch}-${git.tag}-${git.revision}.zip" basedir="${dist}">
-        </zip>
-        <tar destfile="safaripark-${git.branch}-${git.tag}-${git.revision}.tar.gz" compression="gzip" basedir="${dist}"  excludes="*.sh">
-        	 <tarfileset dir="${dist}" filemode="755">
-        	 	<include name="safaripark.sh"/>
-        	  </tarfileset>        	
-       	 <!-- tarfileset dir="${dist}">
-       	    <exclude name="safaripark.sh"/>
-       	 	
-       	  </tarfileset -->        	
-
-        </tar>
-
-	</target>
-	
-    <target name="compile" depends="jsfp">
-    	<mkdir dir="${build}"/>
-    	<javac srcdir="${src}" destdir="${build}" source="1.6" target="1.6" includeantruntime="no">
-    		<classpath>
-		        <pathelement location="${jna}"/>
-				<pathelement location="${rebus}"/>
-		        <pathelement location="${jsfp}"/>
-				<pathelement location="${tools}"/>
-	    		<pathelement location="${lua}"/>
-	    		<pathelement location="${mig}"/>
-    		</classpath>
-    		
-    	</javac>
-    
-    </target>
-	
-	<target name="buildprops">
-		<exec executable="git" outputproperty="git.tag">
-			<arg value="describe"/>
-			<arg value="--abbrev=0"/>
-			<arg value="--tags"/>
-		</exec>
-		<exec executable="git" outputproperty="git.branch">
-			<arg value="rev-parse"/>
-			<arg value="--abbrev-ref"/>
-			<arg value="HEAD"/>	
-		</exec>
-
-		<exec executable="git" outputproperty="git.revision">
-			<arg value="rev-list"/>
-			<arg value="--count"/>
-			<arg value="HEAD"/>	
-		</exec>
-		
-		<tstamp>
-		      <format property="build.date" pattern="yyyy-MM-dd hh:mm:ss" />
-		</tstamp>
-		<propertyfile file="${build}/nl/nikhef/safaripark/build.properties">
-			<entry key="git.branch" value="${git.branch}"/>
-			<entry key="git.tag" value="${git.tag}"/>
-			<entry key="git.revision" value="${git.revision}"/>
-			<entry key="build.date" value="${build.date}" />
-		</propertyfile>
-	</target>
-
-	<target name="clean">
-		  <delete dir="${build}"/>
-		  <delete dir="${dist}"/>
-    </target>
-
-	
 </project>

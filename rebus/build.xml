@@ -1,45 +1,35 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- ====================================================================== 
-     4 apr. 2016 13:06:34                                                        
-
-     Rebus    
-     Java Bus Emulator Interface
-                   
-     vincentb                                                                
-     ====================================================================== -->
 <project name="Rebus" default="default">
-    <description>
-            Java Bus Emulator Interface
-    </description>
-	
-	<property name="src" location="src"/>
-	<property name="build" location="build"/>
-	<property name="jar" value="rebus.jar"/>
+  <description>
+    Java Bus Emulator Interface
+  </description>
 
-	<target name="default" depends="jar" />
-	
-	<target name="jar" depends="compile">
-		
-		<jar destfile="${jar}">
-			<fileset dir="${build}" />
-			<fileset dir="${src}" includes="natives/**/*"/>
-		</jar>
-	</target>
-	
-    <target name="compile">
-    	<mkdir dir="${build}"/>
-    	<javac srcdir="${src}" destdir="${build}"  source="1.6" target="1.6" includeantruntime="no">
-            <classpath>
-                <pathelement location="../nikhef-tools/nikhef-tools.jar"/>
-                <pathelement location="lib/jna-4.4.0.jar"/>
-            </classpath>
-        </javac>
-    </target>
+  <property name="src" location="src"/>
+  <property name="build" location="build"/>
+  <property name="jar" value="rebus.jar"/>
 
-	<target name="clean">
-		  <delete dir="${build}"/>
-		  <delete file="${jar}"/>
-    </target>
+  <target name="default" depends="jar" />
+  <target name="jar" depends="compile">
 
-	
+    <jar destfile="${jar}">
+      <fileset dir="${build}" />
+      <fileset dir="${src}" includes="natives/**/*"/>
+    </jar>
+  </target>
+
+  <target name="compile">
+    <mkdir dir="${build}"/>
+    <javac srcdir="${src}" destdir="${build}" includeantruntime="no" debug="true" debuglevel="lines,vars,source">
+      <classpath>
+        <pathelement location="../nikhef-tools/nikhef-tools.jar"/>
+        <pathelement location="lib/jna-4.4.0.jar"/>
+      </classpath>
+    </javac>
+  </target>
+
+  <target name="clean">
+    <delete dir="${build}"/>
+    <delete file="${jar}"/>
+  </target>
+
 </project>
