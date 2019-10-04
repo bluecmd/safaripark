@@ -226,6 +226,9 @@ public class MonitorModel extends AbstractTableModel implements SFPDeviceListene
 	public void sfpDeviceAdded(SFPProvider provider, SFPDevice dev) {
 		_devices.add(dev);
 		dev.addDeviceListener(this);
+		if (updateRowCount()) {
+			fireTableDataChanged();
+		}
 	}
 
 
@@ -233,6 +236,9 @@ public class MonitorModel extends AbstractTableModel implements SFPDeviceListene
 	public void sfpDeviceRemoved(SFPProvider provider, SFPDevice dev) {
 		_devices.remove(dev);
 		dev.removeDeviceListener(this);
+		if (updateRowCount()) {
+			fireTableDataChanged();
+		}
 	}
 
 
