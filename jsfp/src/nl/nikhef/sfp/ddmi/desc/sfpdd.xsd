@@ -1,0 +1,315 @@
+<!--
+  SaFariPark SFP+ editor
+  Copyright (C) 2017 National Institute for Subatomic Physics Nikhef
+  
+  This program is free software: you can redistribute it and/or modify
+  it under the terms of the GNU General Public License as published by
+  the Free Software Foundation, either version 3 of the License, or
+  (at your option) any later version.
+  
+  This program is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  GNU General Public License for more details.
+  
+  You should have received a copy of the GNU General Public License
+  along with this program.  If not, see <http://www.gnu.org/licenses/>.
+-->
+<xs:schema attributeFormDefault="unqualified"
+	elementFormDefault="qualified" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+
+	<!-- Types -->
+	<xs:simpleType name="unsignedInt">
+		<xs:union memberTypes="xs:unsignedInt">
+			<xs:simpleType>
+				<xs:restriction base="xs:token">
+					<xs:pattern value="x[0-9A-Fa-f]{1,9}" />
+				</xs:restriction>
+			</xs:simpleType>
+		</xs:union>
+	</xs:simpleType>
+
+	<xs:simpleType name="unsignedByte">
+		<xs:union memberTypes="xs:unsignedByte">
+			<xs:simpleType>
+				<xs:restriction base="xs:token">
+					<xs:pattern value="x[0-9A-Fa-f]{1,2}" />
+				</xs:restriction>
+			</xs:simpleType>
+		</xs:union>
+	</xs:simpleType>
+
+
+	<xs:complexType name="identifier" mixed="false">
+		<xs:attribute type="xs:ID" name="id" use="optional" />
+	</xs:complexType>
+
+	<xs:complexType name="element" mixed="false">
+		<xs:complexContent>
+			<xs:extension base="identifier">
+				<xs:attribute type="xs:string" name="label" use="optional" />
+				<xs:attribute type="xs:string" name="short" use="optional" />
+				<xs:attribute type="xs:string" name="name" use="optional" />
+				<xs:attribute type="xs:IDREF" name="password-id" use="optional" />
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+
+
+	<xs:complexType name="value" mixed="false">
+		<xs:complexContent>
+			<xs:extension base="element">
+				<xs:attribute type="xs:boolean" name="writable" use="optional" />
+				<xs:attribute type="xs:boolean" name="monitor" use="optional" />
+				<xs:attribute type="unsignedByte" name="offset" use="required" />
+				<xs:attribute type="unsignedByte" name="length" use="required" />
+				<xs:attribute type="xs:string" name="level" use="optional" />
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+
+	<xs:complexType name="decimal" mixed="false">
+		<xs:complexContent>
+			<xs:extension base="value">
+				<xs:sequence>
+					<xs:element ref="scale" maxOccurs="unbounded" minOccurs="0" />
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+
+
+	<!-- Root element -->
+	<xs:element name="ddmi">
+		<xs:complexType>
+			<xs:complexContent>
+				<xs:extension base="identifier">
+					<xs:sequence>
+						<xs:element ref="source" maxOccurs="unbounded"
+							minOccurs="0" />
+						<xs:element ref="group" maxOccurs="unbounded"
+							minOccurs="0" />
+					</xs:sequence>
+				</xs:extension>
+			</xs:complexContent>
+		</xs:complexType>
+	</xs:element>
+
+	<!-- Sources, checksums and cache -->
+
+	<xs:element name="checksum">
+		<xs:complexType>
+			<xs:simpleContent>
+				<xs:extension base="xs:string">
+					<xs:attribute type="unsignedByte" name="offset" use="optional" />
+					<xs:attribute type="unsignedByte" name="start" use="optional" />
+					<xs:attribute type="unsignedByte" name="end" use="optional" />
+				</xs:extension>
+			</xs:simpleContent>
+		</xs:complexType>
+	</xs:element>
+
+	<xs:element name="cache">
+		<xs:complexType>
+			<xs:simpleContent>
+				<xs:extension base="xs:string">
+					<xs:attribute type="unsignedByte" name="start" use="optional" />
+					<xs:attribute type="unsignedByte" name="end" use="optional" />
+				</xs:extension>
+			</xs:simpleContent>
+		</xs:complexType>
+	</xs:element>
+
+	<xs:element name="source">
+		<xs:complexType mixed="false">
+			<xs:sequence>
+				<xs:element ref="checksum" maxOccurs="unbounded"
+					minOccurs="0" />
+				<xs:element ref="cache" minOccurs="0" />
+			</xs:sequence>
+			<xs:attribute type="unsignedByte" name="i2c-addr" use="optional" />
+			<xs:attribute type="xs:ID" name="id" use="optional" />
+			<xs:attribute type="unsignedByte" name="start" use="optional" />
+			<xs:attribute type="unsignedByte" name="end" use="optional" />
+			<xs:attribute type="unsignedByte" name="page-select"
+				use="optional" />
+			<xs:attribute type="xs:string" name="valid-if" use="optional" />
+			<xs:attribute type="unsignedByte" name="page" use="optional" />
+			<xs:attribute type="xs:IDREF" name="parent-id" use="optional" />
+		</xs:complexType>
+	</xs:element>
+
+
+
+
+
+	<xs:element name="group">
+		<xs:complexType>
+			<xs:complexContent>
+				<xs:extension base="element">
+					<xs:choice maxOccurs="unbounded" minOccurs="0">
+						<xs:element ref="int" />
+						<xs:element ref="uint" />
+						<xs:element ref="bitmap" />
+						<xs:element ref="text" />
+						<xs:element ref="group" />
+						<xs:element ref="float" />
+						<xs:element ref="ufix" />
+						<xs:element ref="sfix" />
+						<xs:element ref="password" />
+					</xs:choice>
+					<xs:attribute type="xs:IDREF" name="source-id" use="optional" />
+					<xs:attribute type="xs:string" name="showIf" use="optional" />
+				</xs:extension>
+			</xs:complexContent>
+		</xs:complexType>
+	</xs:element>
+
+
+
+	<xs:element name="int">
+		<xs:complexType>
+			<xs:complexContent>
+				<xs:extension base="value">
+					<xs:sequence>
+						<xs:element ref="map" maxOccurs="unbounded" minOccurs="0" />
+					</xs:sequence>
+				</xs:extension>
+			</xs:complexContent>
+		</xs:complexType>
+	</xs:element>
+
+	<xs:element name="uint">
+		<xs:complexType>
+			<xs:complexContent>
+				<xs:extension base="value">
+					<xs:sequence>
+						<xs:element ref="map" maxOccurs="unbounded" minOccurs="0" />
+					</xs:sequence>
+				</xs:extension>
+			</xs:complexContent>
+		</xs:complexType>
+	</xs:element>
+
+
+	<xs:element name="bitmap">
+		<xs:complexType>
+			<xs:complexContent>
+				<xs:extension base="value">
+					<xs:sequence>
+						<xs:element ref="bool" maxOccurs="unbounded" minOccurs="0" />
+					</xs:sequence>
+				</xs:extension>
+			</xs:complexContent>
+		</xs:complexType>
+	</xs:element>
+
+	<xs:element name="password">
+		<xs:complexType>
+			<xs:complexContent>
+				<xs:extension base="value">
+					<xs:sequence>
+						<!-- when a const password is set the value is applied each time on write -->
+						<!-- otherwise the password is asked by the password manager (TODO) -->
+						<xs:element name="const" type="xs:string" minOccurs="0"/>
+					</xs:sequence>
+				</xs:extension>
+			</xs:complexContent>
+		</xs:complexType>
+	</xs:element>
+
+
+	<xs:element name="text">
+		<xs:complexType>
+			<xs:complexContent>
+				<xs:extension base="value" />
+			</xs:complexContent>
+		</xs:complexType>
+	</xs:element>
+
+
+
+	<xs:element name="float">
+		<xs:complexType>
+			<xs:complexContent>
+				<xs:extension base="decimal" />
+			</xs:complexContent>
+		</xs:complexType>
+	</xs:element>
+
+
+	<xs:element name="ufix">
+		<xs:complexType>
+			<xs:complexContent>
+				<xs:extension base="decimal">
+					<xs:attribute type="unsignedInt" name="divider" use="optional" />
+				</xs:extension>
+			</xs:complexContent>
+		</xs:complexType>
+	</xs:element>
+
+	<xs:element name="sfix">
+		<xs:complexType>
+			<xs:complexContent>
+				<xs:extension base="decimal">
+					<xs:attribute type="unsignedInt" name="divider" use="optional" />
+				</xs:extension>
+			</xs:complexContent>
+		</xs:complexType>
+	</xs:element>
+
+
+	<!-- Meta elements -->
+	<xs:element name="bool">
+		<xs:complexType>
+			<xs:simpleContent>
+				<xs:extension base="xs:string">
+					<xs:attribute type="xs:unsignedByte" name="bit" use="optional" />
+				</xs:extension>
+			</xs:simpleContent>
+		</xs:complexType>
+	</xs:element>
+
+	<xs:element name="scale">
+		<xs:complexType>
+			<xs:attribute type="xs:float" name="offset" use="optional" />
+			<xs:attribute type="xs:float" name="scale" use="optional" />
+		</xs:complexType>
+	</xs:element>
+
+	<xs:element name="map">
+		<xs:complexType>
+			<xs:simpleContent>
+				<xs:extension base="xs:string">
+					<xs:attribute type="unsignedByte" name="key" use="optional" />
+				</xs:extension>
+			</xs:simpleContent>
+		</xs:complexType>
+	</xs:element>
+
+	<!-- Overlay support -->
+	<xs:element name="overlay">
+		<xs:complexType mixed="false">
+			<xs:choice maxOccurs="unbounded" minOccurs="0">
+				<xs:element ref="bool"/>
+				<xs:element ref="map"/>
+				<xs:element ref="scale"/>
+				<xs:element ref="sfix"/>
+				<xs:element ref="ufix"/>
+				<xs:element ref="float"/>
+				<xs:element ref="int"/>
+				<xs:element ref="uint"/>
+				<xs:element ref="text"/>
+				<xs:element ref="bitmap"/>
+				<xs:element ref="group"/>
+				<xs:element ref="ddmi"/>
+				<xs:element ref="source"/>
+				<xs:element ref="cache"/>
+				<xs:element ref="checksum"/>
+				<xs:element ref="password"/>
+			</xs:choice>
+		</xs:complexType>
+	</xs:element>
+
+</xs:schema>
+

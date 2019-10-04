@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  SaFariPark SFP+ editor
+  Copyright (C) 2017 National Institute for Subatomic Physics Nikhef
+  
+  This program is free software: you can redistribute it and/or modify
+  it under the terms of the GNU General Public License as published by
+  the Free Software Foundation, either version 3 of the License, or
+  (at your option) any later version.
+  
+  This program is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  GNU General Public License for more details.
+  
+  You should have received a copy of the GNU General Public License
+  along with this program.  If not, see <http://www.gnu.org/licenses/>.
+-->
+
+<!-- Adds support for the Maxim DS1856M -->
+<overlay
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:noNamespaceSchemaLocation="sfpdd.xsd">
+	
+	<source id="diag_p0">
+		<checksum offset="247" start="128" end="246"/>
+		<cache start="128" end="247"/>
+	</source>
+	<group id="root">
+		<group label="Loopback SFP" source-id="diag_p0" showIf="isset(id.montype, 6)">
+		
+			<bitmap label="Magic Value"
+					writable="true"
+					offset="128"
+					length="2"
+					name="magic"
+					level="basic" />
+			
+            <int	label="Version"
+            		writable="true"
+            		offset="130"
+            		length="1"
+            		name="version"
+            		level="basic" />
+            
+            <bitmap	label="Calibration Date"
+            		writable="true"
+            		offset="131"
+            		length="3"
+            		name="cal_date"
+            		level="basic" />
+            
+            <bitmap label="OUI responsible"
+            		writable="true"
+            		offset="134"
+            		length="3"
+            		name="cal_oui"
+            		level="basic" />
+            		
+            <ufix	label="Tx-to-Rx Delay (ps)"
+            		writable="true"
+            		offset="140"
+            		length="4"
+            		name="tx2rx_dly"
+            		level="basic" 
+            		divider="x10000"/>
+            		
+            <ufix	label="Tx-to-Out Delay (ps)"
+            		writable="true"
+            		offset="144"
+            		length="4"
+            		name="tx2out_dly"
+            		level="basic"
+            		divider="x10000" />
+            		
+            <ufix	label="Rx-to-Out Delay (ps)"
+            		writable="true"
+            		offset="148"
+            		length="4"
+            		name="rx2out_dly"
+            		level="basic"
+            		divider="x10000" />
+		</group>
+	</group>
+	
+</overlay>

@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  SaFariPark SFP+ editor
+  Copyright (C) 2017 National Institute for Subatomic Physics Nikhef
+  
+  This program is free software: you can redistribute it and/or modify
+  it under the terms of the GNU General Public License as published by
+  the Free Software Foundation, either version 3 of the License, or
+  (at your option) any later version.
+  
+  This program is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  GNU General Public License for more details.
+  
+  You should have received a copy of the GNU General Public License
+  along with this program.  If not, see <http://www.gnu.org/licenses/>.
+-->
+
+
+<!-- Adds support for Eoptolink tuning -->
+<overlay 
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:noNamespaceSchemaLocation="sfpdd.xsd">
+	
+	<group id="root">
+		<group label="Eoptolink Tuning">
+			<group source-id="diag" showIf="isset(id.montype, 6)">
+				<bitmap label="Password (B4 48 3A 8E)" writable="true" 
+					offset="123" length="4" level="basic">
+				</bitmap>
+			</group>
+			<group source-id="diag_p2" showIf="isset(id.montype, 6)">
+				<int label="Tune value" writable="true" 
+					offset="128" length="1" level="basic">
+				</int>
+			</group>
+			
+		</group>
+	</group>
+</overlay>

@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- ====================================================================== 
+     29 apr. 2016 13:06:34                                                        
+
+	 nikhef tools     
+                   
+     vincentb                                                                
+     ====================================================================== -->
+<project name="nikhef-tools" default="default">
+    <description>
+            Java Bus Emulator Interface
+    </description>
+	
+	<property name="src" location="src"/>
+	<property name="build" location="build"/>
+	<property name="jar" location="nikhef-tools.jar"/>
+
+	<target name="default" depends="jar" />
+		
+		
+	
+	<target name="jar" depends="compile">
+		<jar destfile="${jar}">
+			<fileset dir="${build}" />
+			<fileset dir="${src}" includes="**/*.xml" />
+		</jar>
+	</target>
+	
+    <target name="compile">
+    	<mkdir dir="${build}"/>
+    	<javac srcdir="${src}" destdir="${build}"  source="1.6" target="1.6" includeantruntime="no"/>
+    
+    </target>
+
+	<target name="clean">
+		  <delete dir="${build}"/>
+		  <delete file="${jar}"/>
+    </target>
+
+	
+</project>
+

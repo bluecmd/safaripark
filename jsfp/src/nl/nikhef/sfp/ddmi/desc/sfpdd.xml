@@ -1,0 +1,461 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!--
+  SaFariPark SFP+ editor
+  Copyright (C) 2017 National Institute for Subatomic Physics Nikhef
+  
+  This program is free software: you can redistribute it and/or modify
+  it under the terms of the GNU General Public License as published by
+  the Free Software Foundation, either version 3 of the License, or
+  (at your option) any later version.
+  
+  This program is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  GNU General Public License for more details.
+  
+  You should have received a copy of the GNU General Public License
+  along with this program.  If not, see <http://www.gnu.org/licenses/>.
+-->
+
+<!-- This file describes the SPF+ EEPROM and Diagnostic memory layout -->
+
+<ddmi id="root"	
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:noNamespaceSchemaLocation="sfpdd.xsd">
+	
+	<source i2c-addr="x50" id="eeprom" start="0" end="255">
+		<checksum offset="63" start="0" end="62"/>
+		<checksum offset="95" start="64" end="94"/>
+		<cache start="0" end="255"/>
+	</source>
+	<source i2c-addr="x51" id="diag" page-select="127" valid-if="isset(id.montype, 6)" start="0" end="127">
+		<checksum offset="95" start="0" end="94"/>
+		<cache start="0" end="95"/>
+	</source>
+	<source page="0" parent-id="diag" id="diag_p0" start="128" end="255" />
+	<source page="1" parent-id="diag" id="diag_p1" start="128" end="255" />
+	<source page="2" parent-id="diag" id="diag_p2" start="128" end="255" />
+	<source page="3" parent-id="diag" id="diag_p3" start="128" end="255" />
+	<source page="4" parent-id="diag" id="diag_p4" start="128" end="255" />
+	<group source-id="eeprom">
+	
+		<group label="Base ID fields" source-id="eeprom" name="base_id"> 
+			<int label="Identifier" writable="true" name="identifier" 
+				offset="0" length="1" level="basic">
+			
+				<map key="0">Unknown</map>
+				<map key="1">GBIC</map>
+				<map key="2">Soldered</map>
+				<map key="3">SFP/SFP+</map>
+			</int>
+			
+			<int label="Extended Identifier" writable="true" name="ext_identifier"
+				offset="1" length="1" level="basic">
+				<map key="0">GBIC n/a</map>
+				<map key="1">GBIC compliant MOD_DEF 1</map>
+				<map key="2">GBIC compliant MOD_DEF 2</map>
+				<map key="3">GBIC compliant MOD_DEF 3</map>
+				<map key="4">GBIC/SFP defined by ID</map>
+				<map key="5">GBIC compliant MOD_DEF 5</map>
+				<map key="6">GBIC compliant MOD_DEF 6</map>
+				<map key="7">GBIC compliant MOD_DEF 7</map>
+			</int>
+			
+			<int label="Connector" writable="true" name="connector"
+				offset="2" length="1" level="basic">
+				<map key="0">Unknown or unspecified</map>
+				<map key="1">SC (Subscriber Connector)</map>
+				<map key="2">Fibre Channel Style 1 copper</map>
+				<map key="3">Fibre Channel Style 2 copper</map>
+				<map key="4">BNC/TNC</map>
+				<map key="5">Fibre Channel coax headers</map>
+				<map key="6">Fiber Jack</map>
+				<map key="7">LC (Lucent Connector)</map>
+				<map key="8">MT-RJ</map>
+				<map key="9">MU (Multiple Optical)</map>
+				<map key="10">SG</map>
+				<map key="11">Optical Pigtail</map>
+				<map key="12">MPO 1x12</map>
+				<map key="13">MPO 2x16</map>
+				<map key="32">HSSDC II</map>
+				<map key="33">Copper pigtail</map>
+				<map key="34">RJ45</map>
+				<map key="35">No separable connector</map>
+				<map key="36">MXC 2x16</map>
+				<map key="128">Vendor specific</map>
+			</int>
+			
+			<bitmap label="Transciever" writable="true" name="transciever"
+				offset="3" length="8" level="basic">
+			</bitmap>
+	
+			<bitmap label="Transciever (2)" writable="true" name="transciever2" 
+				offset="36" length="1" level="basic">
+			</bitmap>
+	
+			<int label="Encoding" writable="true"  name="encoding"
+				offset="11" length="1" level="basic">
+			</int>
+			
+			<int label="BR, Nominal" writable="true" name="br_nominal"
+				offset="12" length="1" level="basic">
+			</int>
+			
+			<int label="Rate identifier" writable="true" name="rate_id" 
+				offset="13" length="1" level="basic">
+			</int>
+	
+			<int label="Length (SMF, km)" writable="true" name="length_km" 
+				offset="14" length="1" level="basic">
+			</int>
+			<int label="Length (SMF)" writable="true" name="length_smf"
+				offset="15" length="1" level="basic">
+			</int>
+	
+			<int label="Length (50um)" writable="true" name="length_50um" 
+				offset="16" length="1" level="basic">
+			</int>
+	
+			<int label="Length (62.5)" writable="true" name="length_62d5"
+				offset="17" length="1" level="basic">
+			</int>
+	
+			<int label="Length (OM4/Copper)" writable="true" name="length_om4" 
+				offset="18" length="1" level="basic">
+			</int>
+	
+			<int label="Length (OM3)" writable="true" name="length_om3"
+				offset="19" length="1" level="basic">
+			</int>
+	
+			<text label="Vendor name" writable="true" name="vendor" 
+				offset="20" length="16" level="basic" />
+		
+			<!-- 36:1 Transciever(2) moved up -->
+	
+			<bitmap label="Vendor OUI" writable="true" name="vendor_oui"
+				offset="37" length="3" level="basic" />
+			
+			<text label="Vendor PN" writable="true" name="vendor_pn"
+				offset="40" length="16" level="basic" />
+	
+			<text label="Vendor Rev" writable="true" name="vendor_rev"
+				offset="56" length="4" level="basic" />
+	
+			<int label="Wavelength" writable="true" name="wavelength"
+				offset="60" length="2" level="basic" />
+	
+		</group>
+		<group label="Extended ID fields" name="ext_id">
+			<bitmap label="Options" writable="true" offset="64" length="2" name="options"
+				level="debug">
+				<bool bit="0">Linear Receiver Output Implemented</bool>
+				<bool bit="1">Power Level Declaration</bool>
+				<bool bit="2">Cooled Transceiver declaration</bool>
+				<bool bit="3">Retimer or CDR</bool>
+				<bool bit="4">Paging implemented</bool>
+				<bool bit="5">High Power Level Declaration</bool>
+	
+				<bool bit="9">Loss of Signal implemented</bool>
+				<bool bit="10">Signal Detect Implemented</bool>
+				<bool bit="11">TX_FAULT signal implemented.</bool>
+				<bool bit="12">TX_DISABLE is implemented</bool>
+				<bool bit="13">RATE_SELECT functionality is implemented</bool>
+				<bool bit="14">Tunable transmitter technology</bool>
+				<bool bit="15">Receiver decision threshold implemented</bool>
+			</bitmap>
+
+			<bitmap id="montype" label="Mon Type" writable="true" name="montype"
+				offset="92" length="1">
+				<bool bit="6">Digital Diag Implemented</bool>
+				<bool bit="5">Internally Calibrated</bool>
+				<bool bit="4">Externally Calibrated</bool>
+				<bool bit="3">Received power is average</bool>
+				<bool bit="2">Address change required</bool>
+			</bitmap>
+
+			<int label="BR Max" writable="true" name="br_max"
+				offset="66" length="1" level="basic">
+			</int>
+	
+			<int label="BR Min" writable="true" name="br_min"
+				offset="67" length="1" level="basic">
+			</int>
+		
+			<text label="Vendor SN" writable="true" offset="68" length="16" name="vendor_sn"/>
+			<text label="Date Code" writable="true" offset="84" length="8" name="date_code"/>
+			
+			
+		
+		</group>
+		<group label="Vendor Specific EEPROM" name="vendor_eeprom">
+			<bitmap label="VS EE  96-103" writable="true" offset="96" length="8" />
+			<bitmap label="VS EE 104-111" writable="true" offset="104" length="8" />
+			<bitmap label="VS EE 112-119" writable="true" offset="112" length="8" />
+			<bitmap label="VS EE 120-127" writable="true" offset="120" length="8" />
+		</group>
+	
+		<group label="SFF-8079" name="sff_8079">
+			<bitmap label="SFF-8079 128-143" writable="true" offset="128" length="16" />
+			<bitmap label="SFF-8079 144-159" writable="true" offset="144" length="16" />
+			<bitmap label="SFF-8079 160-175" writable="true" offset="160" length="16" />
+			<bitmap label="SFF-8079 176-191" writable="true" offset="176" length="16" />
+			<bitmap label="SFF-8079 192-207" writable="true" offset="192" length="16" />
+			<bitmap label="SFF-8079 208-223" writable="true" offset="208" length="16" />
+			<bitmap label="SFF-8079 224-239" writable="true" offset="224" length="16" />
+			<bitmap label="SFF-8079 240-255" writable="true" offset="240" length="16" />
+		</group>
+	</group>
+	<group source-id="diag" showIf="isset(id.montype, 6)" id="diag_group">
+		
+		<group label="A/W Thresholds"  name="aw_thresholds">
+			<group label="Temperature" name="temperature">
+				<int label="Temperature High alarm" short="High alarm" offset="0" length="2"  writable="true" name="high_alarm"/>
+				<int label="Temperature Low alarm" short="Low alarm" offset="2" length="2"  writable="true" name="low_alarm"/>
+				<int label="Temperature High warning" short="High warning" offset="4" length="2"  writable="true" name="high_warn"/>
+				<int label="Temperature Low warning" short="Low warning" offset="6" length="2"  writable="true" name="low_warn"/>
+			</group>
+			<group label="Voltage" name="voltage">
+				<uint label="Voltage High alarm" short="High alarm" offset="8" length="2"  writable="true" name="high_alarm"/>
+				<uint label="Voltage Low alarm" short="Low alarm" offset="10" length="2"  writable="true" name="low_alarm"/>
+				<uint label="Voltage High warning" short="High warning" offset="12" length="2"  writable="true" name="high_warn"/>
+				<uint label="Voltage Low warning" short="Low warning" offset="14" length="2"  writable="true" name="low_warn"/>
+			</group>
+
+			<group label="Bias" name="bias">
+				<uint label="Bias High alarm" short="High alarm" offset="16" length="2"  writable="true" name="high_alarm"/>
+				<uint label="Bias Low alarm" short="Low alarm" offset="18" length="2"  writable="true" name="low_alarm"/>
+				<uint label="Bias High warning" short="High warning" offset="20" length="2"  writable="true" name="high_warn"/>
+				<uint label="Bias Low warning" short="Low warning" offset="22" length="2"  writable="true" name="low_warn"/>
+			</group>
+
+			<group label="TX Power" name="tx_power">
+				<uint label="TX Power High alarm" short="High alarm" offset="24" length="2"  writable="true" name="high_alarm"/>
+				<uint label="TX Power Low alarm" short="Low alarm" offset="26" length="2"  writable="true" name="low_alarm"/>
+				<uint label="TX Power High warning" short="High warning" offset="28" length="2"  writable="true" name="high_warn"/>
+				<uint label="TX Power Low warning" short="Low warning" offset="30" length="2"  writable="true" name="low_warn"/>
+			</group>
+
+			<group label="RX Power" name="rx_power">
+				<uint label="RX Power High alarm" short="High alarm" offset="32" length="2"  writable="true" name="high_alarm"/>
+				<uint label="RX Power Low alarm" short="Low alarm" offset="34" length="2"  writable="true" name="low_alarm"/>
+				<uint label="RX Power High warning" short="High warning" offset="36" length="2"  writable="true" name="high_warn"/>
+				<uint label="RX Power Low warning" short="Low warning" offset="38" length="2"  writable="true" name="low_warn"/>
+			</group>
+
+			<group label="Laser Temp" name="laser_temp">
+				<uint label="Laser Temp High alarm" short="High alarm" offset="40" length="2"  writable="true" name="high_alarm"/>
+				<uint label="Laser Temp Low alarm" short="Low alarm" offset="42" length="2"  writable="true" name="low_alarm"/>
+				<uint label="Laser Temp High warning" short="High warning" offset="44" length="2"  writable="true" name="high_warn"/>
+				<uint label="Laser Temp Low warning" short="Low warning" offset="46" length="2"  writable="true" name="low_warn"/>
+			</group>
+			<group label="TEC Current" name="tec_current">
+				<uint label="TEC Current High alarm" short="High alarm" offset="48" length="2"  writable="true" name="high_alarm"/>
+				<uint label="TEC Current Low alarm" short="Low alarm" offset="50" length="2"  writable="true" name="low_alarm"/>
+				<uint label="TEC Current High warning" short="High warning" offset="52" length="2"  writable="true" name="high_warn"/>
+				<uint label="TEC Current Low warning" short="Low warning" offset="54" length="2"  writable="true" name="low_warn"/>
+			</group>
+
+		</group>
+		<group label="Calibration Constants">
+			<float	label="RX Power 4"
+					offset="56"
+					length="4"
+					writable="true" />
+					
+			<float	label="RX Power 3"
+					offset="60"
+					length="4"
+					writable="true" />
+					
+			<float	label="RX Power 2"
+					offset="64"
+					length="4"
+					writable="true" />
+					
+			<float	label="RX Power 1"
+					offset="68"
+					length="4"
+					writable="true" />
+					
+			<float	label="RX Power 0"
+					offset="72"
+					length="4"
+					writable="true" />
+			
+			<ufix	label="Tx_I(Slope)"
+					offset="76"
+					length="2"
+					writable="true"
+					name="tx_i_slope"
+					divider="x100" />
+			
+			<sfix	label="Tx_I(Offset)"
+					offset="78"
+					length="2"
+					writable="true"
+					name="tx_i_offset" />
+			
+			<ufix	label="Tx_Pwr(Slope)"
+					offset="80"
+					length="2"
+					writable="true"
+					name="tx_pwr_slope"
+					divider="x100" />
+			
+			<sfix	label="Tx_Pwr(Offset)"
+					offset="82"
+					length="2"
+					writable="true"
+					name="tx_pwr_offset" />
+			
+			<ufix	label="T(Slope)"
+					offset="84"
+					length="2"
+					writable="true"
+					name="t_slope"
+					divider="x100" />
+			
+			<sfix	label="T(Offset)"
+					offset="86"
+					length="2"
+					writable="true"
+					name="t_offset" />
+			
+			<ufix	label="V(Slope)"
+					offset="88"
+					length="2"
+					writable="true"
+					name="v_slope"
+					divider="x100" />
+			
+			<sfix	label="V(Offset)"
+					offset="90"
+					length="2"
+					writable="true"
+					name="v_offset" />
+		</group>
+		
+		<group label="Real-time diagnostics" name="rt_diag">
+			<sfix	label="Temperature (&#176;C)"
+					offset="96"
+					length="2"
+					monitor="true"
+					name="temperature"
+					divider="256" />
+					
+			<ufix	label="Vcc (V)"
+					offset="98"
+					length="2"
+					monitor="true"
+					name="vcc"
+					divider="10000" />
+					
+			<ufix	label="TX Bias (mA)"
+					offset="100"
+					length="2"
+					monitor="true"
+					name="tx_bias"
+					divider="500" />
+					
+			<ufix	label="TX Power (mW)"
+					offset="102" length="2"
+					monitor="true"
+					name="tx_power"
+					divider="1000" />
+
+			<ufix	label="RX Power (mW)"
+					offset="104"
+					length="2"
+					monitor="true"
+					name="rx_bias"
+					divider="1000" />
+
+			<!-- TODO BEGIN build visual conditional here -->
+			<sfix	label="Laser temperature"
+					offset="106"
+					length="2"
+					monitor="true"
+					name="laser_temp"
+					divider="x100" />
+
+			<sfix	label="Laser wavelength"
+					offset="106"
+					length="2"
+					monitor="true"
+					name="laser_wavelength"
+					divider="x100" />
+
+			<!-- TODO END build visual conditional here -->
+
+
+			<sfix
+				label="TEC current (mA)"
+				offset="108"
+				length="2"
+				monitor="true"
+				name="tec_current"
+				divider="10" />
+		
+			<!-- Oh dear, a monitoring, changeable value... -->
+			<bitmap label="Status/Control" writable="true" offset="110" length="1" monitor="true" name="status_ctrl">
+				<bool bit="7">TX Disabled</bool>
+				<bool bit="6">Soft TX disable</bool>
+				<bool bit="5">RS(1) State</bool>
+				<bool bit="4">RS(0) Rate Select State</bool>
+				<bool bit="3">RS(0) Rate Select Select</bool>
+				<bool bit="2">TX Fault state</bool>
+				<bool bit="1">Rx_Los</bool>
+				<bool bit="0">Data Ready Bar</bool>
+			</bitmap>
+
+			<bitmap label="Alarm Flags" writable="false" offset="112" length="2" monitor="true" name="alarm_flags">
+				<bool bit="7">Temp High</bool>
+				<bool bit="6">Temp Low</bool>
+				<bool bit="5">Vcc High</bool>
+				<bool bit="4">Vcc Low</bool>
+				<bool bit="3">TX Bias High</bool>
+				<bool bit="2">TX Bias Low</bool>
+				<bool bit="1">Tx Power High</bool>
+				<bool bit="0">Tx Power Low</bool>
+				<bool bit="15">Rx Power High</bool>
+				<bool bit="14">Rx Power Low</bool>
+			</bitmap>
+
+			<bitmap label="Warn Flags" writable="false" offset="116" length="2" monitor="true" name="warn_flags">
+				<bool bit="7">Temp High</bool>
+				<bool bit="6">Temp Low</bool>
+				<bool bit="5">Vcc High</bool>
+				<bool bit="4">Vcc Low</bool>
+				<bool bit="3">TX Bias High</bool>
+				<bool bit="2">TX Bias Low</bool>
+				<bool bit="1">Tx Power High</bool>
+				<bool bit="0">Tx Power Low</bool>
+				<bool bit="15">Rx Power High</bool>
+				<bool bit="14">Rx Power Low</bool>
+			</bitmap>
+			
+			
+			<!-- TODO add sub-field selection -->
+			<bitmap label="Input equialization" writable="true" offset="114" length="1" name="inp_equalization">
+			</bitmap>
+			
+			<bitmap label="Output emphasis control" writable="true" offset="115" length="1" name="out_equalization">
+			</bitmap>
+
+			<bitmap label="Extended control/status" writable="true" offset="118" length="2" name="ext_ctrl_status">
+				<bool bit="11">Soft RS(1) select</bool>
+				<bool bit="9">Pwr. Lvl. Oper state</bool>
+				<bool bit="8">Pwr. Lvl. Select</bool>
+				<bool bit="1">Tx CDR unlocked</bool>
+				<bool bit="0">Rx CDR unlocked</bool>
+
+			</bitmap>
+
+			
+
+		</group>
+	</group>
+	
+</ddmi>

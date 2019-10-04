@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  SaFariPark SFP+ editor
+  Copyright (C) 2017 National Institute for Subatomic Physics Nikhef
+  
+  This program is free software: you can redistribute it and/or modify
+  it under the terms of the GNU General Public License as published by
+  the Free Software Foundation, either version 3 of the License, or
+  (at your option) any later version.
+  
+  This program is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  GNU General Public License for more details.
+  
+  You should have received a copy of the GNU General Public License
+  along with this program.  If not, see <http://www.gnu.org/licenses/>.
+-->
+
+
+<!-- Adds support for the Maxim DS1856M -->
+<overlay
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:noNamespaceSchemaLocation="sfpdd.xsd">
+	
+	<group id="root">
+		<group label="Maxim DS1856M" showIf="isset(id.montype, 6)">
+			<group source-id="diag" label="Password">
+				<bitmap label="Password" writable="true" 
+					offset="81" length="4" level="basic">
+				</bitmap>
+			</group>
+			<group source-id="diag_p3" label="Configuration">
+				<bitmap label="Mode" writable="true" 
+					offset="80" length="1" level="basic" />
+			</group>
+		</group>
+	</group>
+	
+</overlay>

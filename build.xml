@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- ====================================================================== 
+     4 apr. 2016 13:06:34                                                        
+
+	 jsfp     
+     Java SFP Library
+                   
+     vincentb                                                                
+     ====================================================================== -->
+<project name="safaripark" default="default">
+    <description>
+        General project build
+    </description>
+    
+    <target name="default">
+        <ant dir="nikhef-tools"/>
+        <ant dir="rebus"/>
+        <ant dir="jsfp"/>
+        <ant dir="safaripark"/>
+    </target>
+
+    <target name="clean">
+        <ant dir="nikhef-tools" target="clean"/>
+        <ant dir="rebus" target="clean"/>
+        <ant dir="jsfp" target="clean"/>
+        <ant dir="safaripark" target="clean"/>
+    </target>
+
+</project>

@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  SaFariPark SFP+ editor
+  Copyright (C) 2017 National Institute for Subatomic Physics Nikhef
+  
+  This program is free software: you can redistribute it and/or modify
+  it under the terms of the GNU General Public License as published by
+  the Free Software Foundation, either version 3 of the License, or
+  (at your option) any later version.
+  
+  This program is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  GNU General Public License for more details.
+  
+  You should have received a copy of the GNU General Public License
+  along with this program.  If not, see <http://www.gnu.org/licenses/>.
+-->
+
+<!-- Adds support for the Maxim DS1856M -->
+<overlay
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:noNamespaceSchemaLocation="sfpdd.xsd">
+	
+	<group id="root">
+		<group label="Tunable SFP" source-id="diag_p2" showIf="isset(id.montype, 6)">
+			<bitmap label="Dithering" writable="false" offset="128" length="1" name="dithering"
+				level="debug">
+				<bool bit="0">Selection in 50PPM steps</bool>
+				<bool bit="1">Selection by channel number></bool>
+				<bool bit="2">TX Dither supported</bool>
+			</bitmap>
+			<group label="Laser capabilities">
+				<int label="First Frequency (THz)"    writable="false" name="LFL1" offset="132" length="2" level="basic" />
+				<ufix label="First Frequency (GHz)" writable="false" name="LFL2" offset="134" length="2" level="basic">
+					<scale scale="0.1"/>
+				</ufix>
+				<int label="Last Frequency (THz)"     writable="false" name="LFH1" offset="136" length="2" level="basic" />
+				<ufix label="Last Frequency (GHz)"  writable="false" name="LFH2" offset="138" length="2" level="basic">
+					<scale scale="0.1"/>
+				</ufix>
+				<ufix label="Minimum grid spacing (GHz)" writable="false" name="LGrid" offset="140" length="2" level="basic" >
+					<scale scale="0.1"/>
+				</ufix>
+			</group>
+			<group label="Frequency and wavelength control">
+				<int label="Channel number set"         writable="true" name="chno_set"  offset="144" length="2" level="basic" />
+				<ufix label="Wavelength set (nm)" writable="true" name="wl_set"    offset="146" length="2" level="basic" >
+					<scale scale="0.05"/>
+				</ufix>
+				<bitmap label="Other options"         writable="true" name="tx_dither" offset="151" length="1" level="basic">
+					<bool bit="0">Disable dithering</bool>
+				</bitmap>
+			</group>
+			<group label="Status and Alarms">
+				<int label="Error frequency"   writable="false" name="err_f"   offset="152" length="2" level="basic" />
+				<int label="Error wavelength"  writable="false" name="err_wl"  offset="154" length="2" level="basic" />
+				<bitmap label="Current status" writable="false" name="current_status" offset="168" length="1" level="basic">
+					<bool bit="4">TX tune</bool>
+					<bool bit="5">Wavelength Unlocked</bool>
+					<bool bit="6">TEC Fault</bool>
+				</bitmap>
+				<bitmap label="Latched status" writable="false" name="latched_status" offset="172" length="1" level="basic">
+					<bool bit="2">Unsupported TX Dither</bool>
+					<bool bit="3">New Channel acquired</bool>
+					<bool bit="4">Bad Channel requested</bool>
+					<bool bit="5">Wavelength Unlocked</bool>
+					<bool bit="6">TEC Fault</bool>
+				</bitmap>
+			</group>
+		</group>
+	</group>
+	
+</overlay>
