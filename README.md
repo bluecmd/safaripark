@@ -5,7 +5,9 @@ It is a fork of [sfp-plus-i2c](https://www.ohwr.org/project/sfp-plus-i2c) to add
 
 Original logo:
 
-![Logo](https://raw.githubusercontent.com/bluecmd/safaripark/master/safaripark/resources/splash.png)
+![Logo](safaripark/resources/splash.png)
+
+![Screenshot](safaripark.png)
 
 # Build
 
