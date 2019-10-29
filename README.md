@@ -1,6 +1,6 @@
 # SaFariPark
 
-This package contains an interface to interact with SFP+ modles. It is written in Java.
+This package contains an interface to interact with SFP+ modules. It is written in Java.
 It is a fork of [sfp-plus-i2c](https://www.ohwr.org/project/sfp-plus-i2c) to add support for [fejkon](https://github.com/bluecmd/fejkon).
 
 Original logo:
