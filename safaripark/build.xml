@@ -29,6 +29,12 @@
             <fileset dir="../" includes="jsfp/lib/luaj-jse-3.0.1.jar"/>
             <fileset dir="../" includes="rebus/lib/jna-4.4.0.jar"/>
             <fileset dir="./" includes="lib/miglayout-4.0-swing.jar"/>
+            <fileset dir="../" includes="jsfp/lib/luaj-jse-3.0.1.jar"/>
+            <fileset dir="../" includes="jsfp/lib/jna-5.6.0.jar"/>
+            <fileset dir="../" includes="jsfp/lib/linux-common-0.1.1.jar"/>
+            <fileset dir="../" includes="jsfp/lib/linux-errno-1.0.0.jar"/>
+            <fileset dir="../" includes="jsfp/lib/linux-io-0.0.3.jar"/>
+            <fileset dir="../" includes="jsfp/lib/linux-i2c-1.0.0.jar"/>
           </zips>
         </archives>
       </restrict>
@@ -52,6 +58,11 @@
         <pathelement location="../jsfp/jsfp.jar"/>
         <pathelement location="../nikhef-tools/nikhef-tools.jar"/>
         <pathelement location="../jsfp/lib/luaj-jse-3.0.1.jar"/>
+        <pathelement location="../jsfp/lib/jna-5.6.0.jar"/>
+        <pathelement location="../jsfp/lib/linux-common-0.1.1.jar"/>
+        <pathelement location="../jsfp/lib/linux-errno-1.0.0.jar"/>
+        <pathelement location="../jsfp/lib/linux-io-0.0.3.jar"/>
+        <pathelement location="../jsfp/lib/linux-i2c-1.0.0.jar"/>
         <pathelement location="lib/miglayout-4.0-swing.jar"/>
       </classpath>
     </javac>

@@ -51,6 +51,11 @@
       <classpath>
         <pathelement location="${rebus_lib}/JavaFTD2XX-0.2.6.jar"/>
         <pathelement location="${lib}/luaj-jse-3.0.1.jar"/>
+        <pathelement location="${lib}/jna-5.6.0.jar"/>
+        <pathelement location="${lib}/linux-common-0.1.1.jar"/>
+        <pathelement location="${lib}/linux-errno-1.0.0.jar"/>
+        <pathelement location="${lib}/linux-io-0.0.3.jar"/>
+        <pathelement location="${lib}/linux-i2c-1.0.0.jar"/>
         <pathelement location="${rebus}"/>
         <pathelement location="${tools}"/>
       </classpath>
